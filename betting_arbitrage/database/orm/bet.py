@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import String, Column, Float, Enum, DateTime, Integer, Date
+from sqlalchemy import String, Column, Float, Enum, DateTime, Integer, Date, Text
 
 from database.orm.base import Base
 from database.orm.sport import Sport
@@ -20,7 +20,8 @@ class Bet(Base):
 
     draw_odds = Column(Float, nullable=True)
 
-    match_date = Column(Date)
+    match_datetime = Column(Date)
+    tournament_name = Column(Text)
 
     sport = Column(Enum(Sport), nullable=False)
     website = Column(Enum(Website), nullable=False)

@@ -2,3 +2,4 @@ sqlalchemy
 black[d]
 pytest
 selenium
+bs4

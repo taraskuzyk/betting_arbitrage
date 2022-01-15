@@ -1,6 +1,11 @@
+import datetime
+from dataclasses import dataclass
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+from database.orm.sport import Sport
+from database.orm.website import Website
 from definitions import ROOT_DIR
 
 
@@ -18,6 +23,18 @@ def get_chrome():
     return webdriver.Chrome(
         chrome_options=chrome_options, executable_path=str(CHROME_DRIVER_PATH)
     )
+
+
+@dataclass
+class Bet:
+    team_1_name: str
+    team_2_name: str
+    team_1_odds: float
+    team_2_odds: float
+    sport: Sport
+    website: Website
+    match_datetime: datetime.datetime = None
+    tournament_name: str = None
 
 
 CHROME_DRIVER_PATH = ROOT_DIR / "scrape" / "chromedriver.exe"

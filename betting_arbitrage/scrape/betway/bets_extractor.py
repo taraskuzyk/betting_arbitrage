@@ -1,0 +1,105 @@
+from datetime import datetime
+
+from database.orm.sport import Sport
+from database.orm.website import Website
+from scrape.betway.parse_html import (
+    get_tournaments,
+    get_tournament_dates,
+    get_tournament_date_str,
+    get_events_on_date,
+    get_odds_in_event,
+    get_teams_in_event,
+    get_event_time,
+    get_tournament_name,
+)
+from scrape.shared import Bet
+
+
+class BetsExtractor:
+    def __init__(self, sport: Sport):
+        self.sport = sport
+        self.website = Website.betway
+
+    def extract_bets_from_page(self, html):
+        tournaments = get_tournaments(html)
+        bets = []
+        for tournament in tournaments:
+            bets.extend(self.get_bets_from_tournament(tournament))
+        return bets
+
+    def get_bets_from_tournament(self, tournament):
+        dates = get_tournament_dates(tournament)
+        bets = []
+        for date in dates:
+            bets.extend(self.get_bets_from_date(date))
+        for bet in bets:
+            bet.tournament_name = get_tournament_name(tournament)
+        return bets
+
+    def get_bets_from_date(self, date):
+        date_str = get_tournament_date_str(date)
+        events = get_events_on_date(date)
+        bets = []
+        for event in events:
+            odds_list = get_odds_in_event(event)
+            team_names = get_teams_in_event(event)
+            event_time = get_event_time(event)
+            bets.append(self.get_bet(odds_list, team_names, event_time, date_str))
+        return bets
+
+    def get_bet(self, odds_list, team_names, event_time, date_str):
+        return Bet(
+            team_1_name=team_names[0],
+            team_2_name=team_names[1],
+            team_1_odds=odds_list[0],
+            team_2_odds=odds_list[1],
+            match_datetime=get_datetime_from_date_str_and_event_time(
+                date_str, event_time_str=event_time
+            ),
+            sport=self.sport,
+            website=self.website,
+        )
+
+
+def get_datetime_from_date_str_and_event_time(date_str, event_time_str):
+    str_combined = date_str + " " + event_time_str
+    now = datetime.now()
+    try:
+        datetime_created = datetime.strptime(str_combined, "%a %d %b %H:%M")
+    except ValueError:
+        names_vs_numbers = {
+            "Monday": 0,
+            "Tuesday": 1,
+            "Wednesday": 2,
+            "Thursday": 3,
+            "Friday": 4,
+            "Saturday": 5,
+            "Sunday": 6,
+        }
+        if "Today" in date_str:
+            date_str = date_str.replace("Today", now.strftime("%A"))
+            str_combined = str_combined.replace("Today", now.strftime("%A"))
+        day_of_week = names_vs_numbers[date_str]
+        datetime_created = datetime.strptime(str_combined, "%A %H:%M")
+        datetime_created = datetime(
+            year=datetime.now().year,
+            month=datetime.now().month,
+            day=now.day
+            + day_of_week
+            - now.weekday()
+            + (
+                7 if day_of_week < now.weekday() else 0
+            ),  # 15 + 1 Monday - 6 Saturday + 7 = 17
+            hour=datetime_created.hour,
+            minute=datetime_created.minute,
+        )
+
+    year = datetime.now().year
+
+    return datetime(
+        year=year,
+        month=datetime_created.month,
+        day=datetime_created.day,
+        hour=datetime_created.hour,
+        minute=datetime_created.minute,
+    )

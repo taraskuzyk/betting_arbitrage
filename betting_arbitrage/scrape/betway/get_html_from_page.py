@@ -1,10 +1,9 @@
 import time
 from random import random
 from selenium.webdriver.common.by import By
-from scrape.shared import get_chrome
 
-TABLE_SELECTOR = "div.layout.subcategoryLayout.collection.vertical"
-COLLAPSED_HEADER_SELECTOR = '.collapsableHeader[collapsed="true"]'
+from scrape.betway.css_strings import TABLE_SELECTOR, COLLAPSED_HEADER_SELECTOR
+from scrape.shared import get_chrome
 
 
 def get_html_from_page(url):
