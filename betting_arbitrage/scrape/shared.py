@@ -1,6 +1,7 @@
 import datetime
 from dataclasses import dataclass
 
+import undetected_chromedriver
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -10,6 +11,7 @@ from definitions import ROOT_DIR
 
 
 def get_chrome():
+    return undetected_chromedriver.Chrome()
     chrome_options = Options()
     # chrome_options.add_argument("--headless")
     # chrome_options.add_argument(f"--window-size={dimensions.width}x{dimensions.height}")

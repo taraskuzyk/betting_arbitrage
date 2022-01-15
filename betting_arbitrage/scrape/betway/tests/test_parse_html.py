@@ -5,7 +5,7 @@ import pytest
 from definitions import ROOT_DIR
 from scrape.betway.parse_html import get_tournaments, get_tournament_name, get_tournament_dates, \
     get_tournament_date_str, get_events_on_date, get_teams_in_event, get_odds_in_event, get_event_time
-from scrape.betway.bets_extractor import get_datetime_from_date_str_and_event_time
+from scrape.date_funcs import get_datetime_from_date_str_and_time_str
 
 HTML_PATH = ROOT_DIR / "scrape" / "betway" / "tests" / "betway_csgo.html"
 with open(str(HTML_PATH), encoding="utf-8") as file:
@@ -66,5 +66,5 @@ def test_get_event_time(event):
 
 
 def test_get_datetime_from_date_str_and_event_time():
-    datetime_created = get_datetime_from_date_str_and_event_time("Fri 28 Jan", "08:00")
+    datetime_created = get_datetime_from_date_str_and_time_str("Fri 28 Jan", "08:00")
     assert datetime_created == datetime(year=2022, month=1, day=28, hour=8, minute=0)
