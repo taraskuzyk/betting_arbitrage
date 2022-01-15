@@ -14,14 +14,18 @@ def get_non_live_events(events):
     return [
         event
         for event in events
-        if event.select_one(selector='div[class*="futureDate"]') is not None
+        if is_event_live(event)
     ]
+
+
+def is_event_live(event):
+    return event.select_one(selector='div[class*="futureDate"]') is not None
 
 
 def get_event_datetime(event):
     date_str = event.select_one(selector='div[class*="DateTime-date"]').text
     time_str = date_str[:5]
-    date_str = date_str.replace(time_str, "")
+    date_str = date_str.replace(time_str, "").replace("Today", datetime.now().strftime("%b %d"))
     date_str = time_str + " " + date_str + " " + str(datetime.now().year)
     return datetime.strptime(date_str, "%H:%M %b %d %Y")
 
@@ -39,3 +43,7 @@ def get_odds(event):
 
 def get_tournament_name(event):
     return event.select_one(selector='[class*="TournamentName"]').text
+
+
+def is_tournament_name_present(event):
+    return event.select_one(selector='[class*="TournamentName"]') is not None

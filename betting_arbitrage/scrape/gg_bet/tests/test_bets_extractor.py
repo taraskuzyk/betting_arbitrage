@@ -1,11 +1,10 @@
 from pprint import pprint
 
 from database.orm.sport import Sport
-from database.orm.website import Website
 from definitions import ROOT_DIR
-from scrape.betway.bets_extractor import BetsExtractor
+from scrape.gg_bet.bets_extractor import BetsExtractor
 
-HTML_PATH = ROOT_DIR / "scrape" / "betway" / "tests" / "betway_csgo.html"
+HTML_PATH = ROOT_DIR / "scrape" / "gg_bet" / "tests" / "gg_bet_csgo.html"
 with open(str(HTML_PATH), encoding="utf-8") as file:
     HTML = file.read()
 
@@ -15,4 +14,4 @@ def test_bets_extractor():
     bets = bets_extractor.extract_bets_from_page(HTML)
     for bet in bets:
         pprint(bet.__dict__)
-    assert bets[0].team_1_name == "NIP"
+    assert bets[0].team_1_name == "Young Ninjas"
