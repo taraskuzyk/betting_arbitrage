@@ -10,6 +10,7 @@ COLLAPSED_HEADER_SELECTOR = '.collapsableHeader[collapsed="true"]'
 def get_html_from_page(url):
     chrome = get_chrome()
     chrome.get(url)
+    time.sleep(3)
     expand_all(chrome)
     body = chrome.find_element(By.TAG_NAME, "body")
     return body.get_attribute("innerHTML")
