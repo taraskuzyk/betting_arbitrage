@@ -1,0 +1,1 @@
+pygount ./ --folders-to-skip=venv --suffix=*py --format=summary

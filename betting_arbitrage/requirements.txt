@@ -4,3 +4,4 @@ pytest
 selenium
 bs4
 undetected_chromedriver
+pygount

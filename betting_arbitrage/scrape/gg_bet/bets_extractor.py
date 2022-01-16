@@ -1,5 +1,6 @@
 from database.orm.sport import Sport
 from database.orm.website import Website
+from scrape.gg_bet.parse_html import get_events
 from scrape.gg_bet.parse_html import (
     get_tournament_name,
     is_tournament_name_present,
@@ -8,8 +9,6 @@ from scrape.gg_bet.parse_html import (
     get_team_names,
     get_event_datetime,
 )
-from scrape.date_funcs import get_datetime_from_date_str_and_time_str
-from scrape.gg_bet.parse_html import get_events
 from scrape.shared import Bet
 
 
