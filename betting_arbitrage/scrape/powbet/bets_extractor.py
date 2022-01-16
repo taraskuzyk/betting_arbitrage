@@ -10,7 +10,6 @@ from scrape.powbet.parse_html import (
     get_event_datetime_str,
     get_events,
 )
-from scrape.date_funcs import get_datetime_from_date_str_and_time_str
 from scrape.shared import Bet
 
 
@@ -35,8 +34,13 @@ class BetsExtractor:
                 continue
             odds_list = get_odds_in_event(event)
             team_names = get_teams_in_event(event)
-            event_time = datetime.strptime(get_event_datetime_str(event), "%d/%m %H:%M")
-            bets.append(self.get_bet(odds_list, team_names, event_time, tournament_name))
+            event_time = datetime.strptime(
+                get_event_datetime_str(event) + " " + str(datetime.now().year),
+                "%d/%m %H:%M %Y",
+            )
+            bets.append(
+                self.get_bet(odds_list, team_names, event_time, tournament_name)
+            )
         return bets
 
     def get_bet(self, odds_list, team_names, event_time, tournament_name):
@@ -48,5 +52,5 @@ class BetsExtractor:
             match_datetime=event_time,
             sport=self.sport,
             website=self.website,
-            tournament_name=tournament_name
+            tournament_name=tournament_name,
         )
