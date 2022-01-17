@@ -1,5 +1,8 @@
-from database.orm.sport import Sport
-from database.orm.website import Website
+from database import Database
+from enums.sport import Sport
+from enums.website import Website
+from scrape.db_interface import DBInterface
+from scrape.gg_bet import get_html_from_page
 from scrape.gg_bet.parse_html import get_events
 from scrape.gg_bet.parse_html import (
     get_tournament_name,
@@ -13,9 +16,15 @@ from scrape.shared import Bet
 
 
 class BetsExtractor:
-    def __init__(self, sport: Sport):
+    def __init__(self, db: Database, sport: Sport):
         self.sport = sport
         self.website = Website.gg_bet
+        self.db_interface = DBInterface(db)
+
+    def run(self):
+        html = get_html_from_page(SPORT_TO_URL[self.sport])
+        bets = self.extract_bets_from_page(html)
+        self.db_interface.add_bets_to_db(bets)
 
     def extract_bets_from_page(self, html):
         events = get_events(html)
@@ -23,7 +32,10 @@ class BetsExtractor:
         bets = []
         for tournament, events in tournament_vs_events.items():
             for event in events:
-                odds = get_odds(event)
+                try:
+                    odds = get_odds(event)
+                except ValueError:
+                    continue
                 team_names = get_team_names(event)
                 event_datetime = get_event_datetime(event)
                 bets.append(self.get_bet(odds, team_names, event_datetime, tournament))
@@ -54,3 +66,8 @@ class BetsExtractor:
             website=self.website,
             tournament_name=tournament_name,
         )
+
+
+SPORT_TO_URL = {
+    Sport.csgo: "https://gg.bet/en/counter-strike/"
+}

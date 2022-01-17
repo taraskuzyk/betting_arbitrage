@@ -1,7 +1,6 @@
 from pprint import pprint
 
-from database.orm.sport import Sport
-from database.orm.website import Website
+from enums.sport import Sport
 from definitions import ROOT_DIR
 from scrape.powbet.bets_extractor import BetsExtractor
 

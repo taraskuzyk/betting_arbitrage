@@ -1,5 +1,7 @@
-from database.orm.sport import Sport
-from database.orm.website import Website
+from database import Database
+from enums.sport import Sport
+from enums.website import Website
+from scrape.betway import get_html_from_page
 from scrape.betway.parse_html import (
     get_tournaments,
     get_tournament_dates,
@@ -11,13 +13,20 @@ from scrape.betway.parse_html import (
     get_tournament_name,
 )
 from scrape.date_funcs import get_datetime_from_date_str_and_time_str
+from scrape.db_interface import DBInterface
 from scrape.shared import Bet
 
 
 class BetsExtractor:
-    def __init__(self, sport: Sport):
+    def __init__(self, db: Database, sport: Sport):
         self.sport = sport
         self.website = Website.betway
+        self.db_interface = DBInterface(db)
+
+    def run(self):
+        html = get_html_from_page(SPORT_TO_URL[self.sport])
+        bets = self.extract_bets_from_page(html)
+        self.db_interface.add_bets_to_db(bets)
 
     def extract_bets_from_page(self, html):
         tournaments = get_tournaments(html)
@@ -60,3 +69,4 @@ class BetsExtractor:
         )
 
 
+SPORT_TO_URL = {Sport.csgo: "https://betway.com/en/sports/sct/esports/cs-go"}

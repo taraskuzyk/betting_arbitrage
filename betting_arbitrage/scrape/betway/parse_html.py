@@ -21,7 +21,7 @@ def get_tournament_date_str(event_element):
 
 
 def get_events_on_date(date_element):
-    return date_element.select(".oneLineEventItem")
+    return [event for event in date_element.select(".oneLineEventItem") if event.select_one('.score') is None]
 
 
 def get_teams_in_event(event_element):

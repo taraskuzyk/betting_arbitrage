@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def get_datetime_from_date_str_and_time_str(date_str, time_str):
-    str_combined = date_str + " " + time_str
+    str_combined = date_str.strip() + " " + time_str.strip()
     now = datetime.now()
     try:
         datetime_created = datetime.strptime(str_combined, "%a %d %b %H:%M")
@@ -19,6 +19,12 @@ def get_datetime_from_date_str_and_time_str(date_str, time_str):
         if "Today" in date_str:
             date_str = date_str.replace("Today", now.strftime("%A"))
             str_combined = str_combined.replace("Today", now.strftime("%A"))
+        if "Tomorrow" in date_str:
+            tomorrow = now + timedelta(days=1)
+            date_str = date_str.replace("Tomorrow", tomorrow.strftime("%A"))
+            str_combined = str_combined.replace("Tomorrow", tomorrow.strftime("%A"))
+
+        date_str = date_str.strip()
         day_of_week = names_vs_numbers[date_str]
         datetime_created = datetime.strptime(str_combined, "%A %H:%M")
         datetime_created = datetime(

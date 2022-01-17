@@ -1,8 +1,8 @@
 from database import Database
 from database.orm.base import Base
 from database.orm.bet import Bet
-from database.orm.sport import Sport
-from database.orm.website import Website
+from enums.sport import Sport
+from enums.website import Website
 from definitions import ROOT_DIR
 
 PATH_TO_TEST_DB = ROOT_DIR / "database" / "tests" / "test_betting_odds.db"

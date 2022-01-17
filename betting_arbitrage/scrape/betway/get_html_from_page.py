@@ -17,7 +17,9 @@ def get_html_from_page(url):
 
 def expand_all(chrome):
     headers_to_click = get_headers_to_click(chrome)
-    while len(headers_to_click) > 0:
+    count = 0
+    while len(headers_to_click) > 0 and count < 25:
+        count += 1  # prevent weird stuck bug
         for tag in headers_to_click:
             try:
                 tag.click()

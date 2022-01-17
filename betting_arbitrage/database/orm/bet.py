@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import String, Column, Float, Enum, DateTime, Integer, Date, Text
 
 from database.orm.base import Base
-from database.orm.sport import Sport
-from database.orm.website import Website
+from enums.sport import Sport
+from enums.website import Website
 
 
 class Bet(Base):

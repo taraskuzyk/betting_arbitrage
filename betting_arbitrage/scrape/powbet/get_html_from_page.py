@@ -4,10 +4,11 @@ from selenium.webdriver.common.by import By
 
 from scrape.shared import get_chrome
 
+POWBET_URL = "https://powbet.com/ca/sports"
 
-def get_html_from_page(url, category, sport):
+def get_html_from_page(category, sport):
     chrome = get_chrome()
-    chrome.get(url)
+    chrome.get(POWBET_URL)
     time.sleep(8)
     navigate_to_desired_category(chrome, category, sport)
     expand_all(chrome)
@@ -81,7 +82,6 @@ def panel_has_arrows_down(panel):
 if __name__ == "__main__":
     print(
         get_html_from_page(
-            url="https://powbet.com/ca/sports",
             category="E-sports +",
             sport="Counter-Strike: Global Offensive",
         )

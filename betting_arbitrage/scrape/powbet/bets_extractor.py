@@ -1,7 +1,10 @@
 from datetime import datetime
 
-from database.orm.sport import Sport
-from database.orm.website import Website
+from database import Database
+from enums.sport import Sport
+from enums.website import Website
+from scrape.db_interface import DBInterface
+from scrape.powbet import get_html_from_page
 from scrape.powbet.parse_html import (
     get_tournaments,
     get_odds_in_event,
@@ -14,9 +17,15 @@ from scrape.shared import Bet
 
 
 class BetsExtractor:
-    def __init__(self, sport: Sport):
+    def __init__(self, db: Database, sport: Sport):
         self.sport = sport
         self.website = Website.powbet
+        self.db_interface = DBInterface(db)
+
+    def run(self):
+        html = get_html_from_page(*SPORT_TO_CATEGORY_SPORT[self.sport])
+        bets = self.extract_bets_from_page(html)
+        self.db_interface.add_bets_to_db(bets)
 
     def extract_bets_from_page(self, html):
         tournaments = get_tournaments(html)
@@ -54,3 +63,8 @@ class BetsExtractor:
             website=self.website,
             tournament_name=tournament_name,
         )
+
+
+SPORT_TO_CATEGORY_SPORT = {
+    Sport.csgo: ("E-sports +", "Counter-Strike: Global Offensive")
+}

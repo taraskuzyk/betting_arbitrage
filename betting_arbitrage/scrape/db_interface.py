@@ -9,5 +9,5 @@ class DBInterface:
         self.db = db
 
     def add_bets_to_db(self, bets: List[Bet]):
-        orm_bets = [orm.Bet(*bet.__dict__) for bet in bets]
+        orm_bets = [orm.Bet(**bet.__dict__) for bet in bets]
         self.db.add_all(orm_bets, commit=True)
